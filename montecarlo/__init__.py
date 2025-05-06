@@ -6,5 +6,5 @@
 #from .isinghamiltonian import *
 #from .metropolis import *
 
-from .functions import *
+from .montecarlo import *
 from ._version import __version__
