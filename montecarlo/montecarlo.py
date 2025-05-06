@@ -1,29 +1,35 @@
-"""Provide the primary functions."""
+class montecarlo:
+    def __init__(self, func, setup=None, teardown=None):
+        self.func = func
+        self.setup = setup
+        self.teardown = teardown
 
+    @staticmethod
+    def probability(success, iterations):
+        return float(success)/iterations
 
-def canvas(with_attribution=True):
-    """
-    Placeholder function to show example docstring (NumPy format).
+    @staticmethod
+    def print_results(success, iterations, final=False):
+        if final:
+            print('======================')
+            print('======= FINAL ========')
+            print('======================')
+        print('Iteration #' + str(iterations) + ': ' + str(montecarlo.probability(success, iterations)))
 
-    Replace this function and doc string for your own project.
+    def run(self, iterations=1000000, print_every=10000):
+        g = {}
+        if self.setup is not None:
+            g = self.setup()
 
-    Parameters
-    ----------
-    with_attribution : bool, Optional, default: True
-        Set whether or not to display who the quote is from.
+        success = 0
+        for i in range(1, iterations+1):
+            if self.func(g):
+                success += 1
+            if (i % print_every == 0):
+                self.print_results(success, i)
+        self.print_results(success, iterations, final=True)
 
-    Returns
-    -------
-    quote : str
-        Compiled string including quote and optional attribution.
-    """
+        if self.teardown is not None:
+            self.teardown()
 
-    quote = "The code is but a canvas to our imagination."
-    if with_attribution:
-        quote += "\n\t- Adapted from Henry David Thoreau"
-    return quote
-
-
-if __name__ == "__main__":
-    # Do something if this file is invoked on its own
-    print(canvas())
+        return self.probability(success, iterations)
