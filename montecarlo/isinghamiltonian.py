@@ -12,29 +12,14 @@ class IsingHamiltonian:
     def __init__(self, G):
         self.G = G
         self.length = G.number_of_nodes()
-        self.mus = np.zeros(self.length)
+        self.mu = np.zeros(self.length)
 
     def energy(self, bs: BitString):
-        """Compute energy of configuration, `bs`
-
-            .. math::
-                E = \\left<\\hat{H}\\right>
-
-        Parameters
-        ----------
-        bs   : Bitstring
-            input configuration
-        G    : Graph
-            input graph defining the Hamiltonian
-        Returns
-        -------
-        energy  : float
-            Energy of the input configuration
-        """
+        
         E = 0
         si = 0
         sj = 0
-        Mag_field = 0
+        M = 0
 
         for i, j in self.G.edges:
             if bs.config[i] == 0:
@@ -46,8 +31,8 @@ class IsingHamiltonian:
             else:
                 sj = 1
             J = self.G[i][j]['weight']
-            Mag_field = self.mus[i] * si
-            E += J * si * sj  + Mag_field   
+            M = self.mu[i] * si
+            E += J * si * sj  + M    
         return E
     
     def compute_average_values(self, T: float):
@@ -60,7 +45,7 @@ class IsingHamiltonian:
         Z = 0.0  # energy for z
         k = 1  # the constant k 
         beta = 1/(k * T)
-        e = 0.0
+        EN = 0.0
         
         i = 0
 
@@ -71,10 +56,10 @@ class IsingHamiltonian:
         # to calculating all the values
         for i in range(2**len(bs)):
             bs.set_integer_config(i)
-            e = self.energy(bs)
-            P = np.exp( -beta * e) / Z
-            E += e * P
-            EE += (e ** 2) * P     
+            EN = self.energy(bs)
+            P = np.exp( -beta * EN) / Z
+            E += EN * P
+            EE += (EN ** 2) * P     
             m = bs.on() - bs.off()
             M += m * P
             MM += (m ** 2) * P
@@ -85,4 +70,4 @@ class IsingHamiltonian:
         return E, M, HC, MS
     
     def set_mu(self, mus: np.array):
-        self.mus = mus
+        self.mu = mus
