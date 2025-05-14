@@ -8,7 +8,7 @@ import sys
 import pytest
 
 import montecarlo
-import bitstring from BitString
+from BitString import bitstring
 
 
 def test_montecarlo_imported():
